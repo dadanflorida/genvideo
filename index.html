@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenVideo — Buat Video dari Gambar &amp; Teks</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">▶</span>
+      <span class="brand-name">GenVideo</span>
+    </div>
+    <span class="tagline">gambar + teks → video</span>
+  </header>
+
+  <main class="layout">
+    <!-- ===== Panel kiri: pengaturan & tombol ===== -->
+    <aside class="panel settings-panel">
+      <h2>Pengaturan Video</h2>
+
+      <div class="field">
+        <label for="resolution">Resolusi</label>
+        <select id="resolution">
+          <option value="1280,720" selected>HD 1280×720</option>
+          <option value="1920,1080">Full HD 1920×1080</option>
+          <option value="1080,1080">Persegi 1080×1080</option>
+          <option value="720,1280">Vertikal 720×1280</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="fps">Frame rate (fps)</label>
+        <select id="fps">
+          <option value="24" selected>24</option>
+          <option value="30">30</option>
+          <option value="60">60</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="transition">Transisi</label>
+        <select id="transition">
+          <option value="fade" selected>Fade (memudar)</option>
+          <option value="none">Tanpa transisi</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="audio">Musik / audio latar (opsional)</label>
+        <input type="file" id="audio" accept="audio/*">
+        <div id="audio-name" class="file-hint"></div>
+      </div>
+
+      <div class="field">
+        <label for="textcolor">Warna teks</label>
+        <input type="color" id="textcolor" value="#ffffff">
+      </div>
+
+      <button id="generate-btn" class="btn primary">🎬 Generate Video</button>
+      <a id="download-link" class="btn download" style="display:none" download>⬇️ Unduh Video</a>
+
+      <div id="progress-wrap" class="progress-wrap" style="display:none">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <span id="progress-text" class="progress-text">0%</span>
+      </div>
+    </aside>
+
+    <!-- ===== Panel kanan: daftar slide & preview ===== -->
+    <section class="panel slides-panel">
+      <div class="slides-head">
+        <h2>Slide</h2>
+        <button id="add-slide-btn" class="btn small">+ Tambah Slide</button>
+      </div>
+
+      <div id="slide-list" class="slide-list"></div>
+
+      <div class="preview-block">
+        <h2>Pratinjau</h2>
+        <div class="preview-frame">
+          <canvas id="preview" width="640" height="360"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/video-generator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+  </html>
+  
