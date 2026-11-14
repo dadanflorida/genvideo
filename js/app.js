@@ -152,6 +152,39 @@
     subField.appendChild(subLabel);
     subField.appendChild(subInput);
 
+// Pilihan animasi teks
+const animField = document.createElement('div');
+animField.className = 'field';
+
+const animLabel = document.createElement('label');
+animLabel.textContent = 'Animasi Teks';
+
+const animSelect = document.createElement('select');
+
+const animOptions = [
+  { value: 'none', text: 'Tanpa Animasi' },
+  { value: 'fade', text: 'Fade In' },
+  { value: 'zoom', text: 'Zoom In' },
+  { value: 'slideUp', text: 'Slide Up' }
+];
+
+animOptions.forEach(option => {
+  const opt = document.createElement('option');
+  opt.value = option.value;
+  opt.textContent = option.text;
+  animSelect.appendChild(opt);
+});
+
+animSelect.value = slide.animation || 'none';
+
+animSelect.addEventListener('change', () => {
+  slide.animation = animSelect.value;
+  if (idx === 0) refreshPreview();
+});
+
+animField.appendChild(animLabel);
+animField.appendChild(animSelect);
+    
     // Baris: durasi + tombol
     const row = document.createElement('div');
     row.className = 'slide-row';
@@ -182,6 +215,7 @@
     body.appendChild(imgField);
     body.appendChild(titleField);
     body.appendChild(subField);
+    body.appendChild(animField);
     body.appendChild(row);
 
     card.appendChild(thumb);
