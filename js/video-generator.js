@@ -62,7 +62,7 @@
     ctx.fillRect(0, 0, w, h);
   }
 
-   * ---------- Render satu slide (statis) ---------- */
+     /* ---------- Render satu slide (statis) ---------- */
   // slide: { image (dataURL|null), title, subtitle, duration }
   // opts: { width, height, textColor }
    function renderSlide(ctx, slide, opts, imgEl, progress = 1) {
