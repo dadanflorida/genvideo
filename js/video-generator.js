@@ -62,63 +62,101 @@
     ctx.fillRect(0, 0, w, h);
   }
 
-  /* ---------- Render satu slide (statis) ---------- */
+   * ---------- Render satu slide (statis) ---------- */
   // slide: { image (dataURL|null), title, subtitle, duration }
   // opts: { width, height, textColor }
-  function renderSlide(ctx, slide, opts, imgEl) {
-    const w = opts.width, h = opts.height;
+   function renderSlide(ctx, slide, opts, imgEl, progress = 1) {
+  const w = opts.width;
+  const h = opts.height;
 
-    if (imgEl) {
-      // Gambar dengan overlay gelap tipis agar teks terbaca
-      drawCover(ctx, imgEl, w, h);
-      ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      ctx.fillRect(0, 0, w, h);
-    } else {
-      drawBackground(ctx, w, h);
+  if (imgEl) {
+    drawCover(ctx, imgEl, w, h);
+    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.fillRect(0, 0, w, h);
+  } else {
+    drawBackground(ctx, w, h);
+  }
+
+  const textColor = opts.textColor || '#ffffff';
+  const animation = slide.animation || 'none';
+
+  progress = Math.max(0, Math.min(1, progress));
+
+  function prepareText() {
+    ctx.save();
+
+    if (animation === 'fade') {
+      ctx.globalAlpha = progress;
     }
 
-    const textColor = opts.textColor || '#ffffff';
-
-    // --- Judul ---
-    if (slide.title) {
-      const titleSize = Math.round(Math.min(w, h) * 0.07);
-      ctx.font = '700 ' + titleSize + 'px "Segoe UI", system-ui, Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const maxW = w * 0.82;
-      const lines = wrapText(ctx, slide.title, maxW);
-      const lineH = titleSize * 1.25;
-      const startY = h * 0.32 - ((lines.length - 1) * lineH) / 2;
-
-      ctx.shadowColor = 'rgba(0,0,0,0.65)';
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = textColor;
-      lines.forEach((ln, i) => {
-        ctx.fillText(ln, w / 2, startY + i * lineH);
-      });
-      ctx.shadowBlur = 0;
+    if (animation === 'zoom') {
+      const scale = 0.5 + progress * 0.5;
+      ctx.translate(w / 2, h / 2);
+      ctx.scale(scale, scale);
+      ctx.translate(-w / 2, -h / 2);
     }
 
-    // --- Subjudul ---
-    if (slide.subtitle) {
-      const subSize = Math.round(Math.min(w, h) * 0.035);
-      ctx.font = '400 ' + subSize + 'px "Segoe UI", system-ui, Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const maxW = w * 0.78;
-      const lines = wrapText(ctx, slide.subtitle, maxW);
-      const lineH = subSize * 1.4;
-      const startY = h * 0.6 - ((lines.length - 1) * lineH) / 2;
-
-      ctx.shadowColor = 'rgba(0,0,0,0.6)';
-      ctx.shadowBlur = 8;
-      ctx.fillStyle = 'rgba(255,255,255,0.85)';
-      lines.forEach((ln, i) => {
-        ctx.fillText(ln, w / 2, startY + i * lineH);
-      });
-      ctx.shadowBlur = 0;
+    if (animation === 'slideUp') {
+      ctx.translate(0, (1 - progress) * 100);
     }
   }
+
+  // Judul
+  if (slide.title) {
+    prepareText();
+
+    const titleSize = Math.round(Math.min(w, h) * 0.07);
+
+    ctx.font = '700 ' + titleSize +
+      'px "Segoe UI", system-ui, Arial, sans-serif';
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const lines = wrapText(ctx, slide.title, w * 0.82);
+    const lineH = titleSize * 1.25;
+    const startY = h * 0.32 -
+      ((lines.length - 1) * lineH) / 2;
+
+    ctx.shadowColor = 'rgba(0,0,0,0.65)';
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = textColor;
+
+    lines.forEach((line, i) => {
+      ctx.fillText(line, w / 2, startY + i * lineH);
+    });
+
+    ctx.restore();
+  }
+
+  // Subjudul
+  if (slide.subtitle) {
+    prepareText();
+
+    const subSize = Math.round(Math.min(w, h) * 0.035);
+
+    ctx.font = '400 ' + subSize +
+      'px "Segoe UI", system-ui, Arial, sans-serif';
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const lines = wrapText(ctx, slide.subtitle, w * 0.78);
+    const lineH = subSize * 1.4;
+    const startY = h * 0.6 -
+      ((lines.length - 1) * lineH) / 2;
+
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+
+    lines.forEach((line, i) => {
+      ctx.fillText(line, w / 2, startY + i * lineH);
+    });
+
+    ctx.restore();
+  }
+}
 
   /* ---------- API publik: render untuk pratinjau ---------- */
   VideoGenerator.renderPreview = function (canvas, slide, opts, imgEl) {
@@ -147,15 +185,13 @@
       }
     }
 
-    // 2. Pre-render tiap slide ke canvas offscreen
-    const offscreens = slides.map((s, i) => {
-      const c = document.createElement('canvas');
-      c.width = width;
-      c.height = height;
-      const ctx = c.getContext('2d');
-      renderSlide(ctx, s, { width, height, textColor: config.textColor }, images[i]);
-      return c;
-    });
+    // 2. Siapkan canvas offscreen untuk setiap slide
+const offscreens = slides.map(() => {
+  const c = document.createElement('canvas');
+  c.width = width;
+  c.height = height;
+  return c;
+});
 
     // 3. Total durasi
     const durations = slides.map(s => Math.max(0.5, Number(s.duration) || 3));
@@ -235,21 +271,69 @@
 
     // 8. Gambar satu frame
     function drawFrame(t) {
-      const { index, localT } = slideAt(t);
-      const durMs = durations[index] * 1000;
-      const localMs = localT * 1000;
+  const { index, localT } = slideAt(t);
 
-      ctx.globalAlpha = 1;
-      ctx.drawImage(offscreens[index], 0, 0);
+  const durMs = durations[index] * 1000;
+  const localMs = localT * 1000;
 
-      // Transisi fade ke slide berikutnya
-      if (fadeMs > 0 && index < offscreens.length - 1 && localMs > durMs - fadeMs) {
-        const alpha = (localMs - (durMs - fadeMs)) / fadeMs;
-        ctx.globalAlpha = alpha;
-        ctx.drawImage(offscreens[index + 1], 0, 0);
-        ctx.globalAlpha = 1;
-      }
-    }
+  // Durasi animasi teks: 800 milidetik
+  const animProgress = Math.min(1, localMs / 800);
+
+  // Render slide utama
+  const currentCanvas = offscreens[index];
+  const currentCtx = currentCanvas.getContext('2d');
+
+  currentCtx.clearRect(0, 0, width, height);
+
+  renderSlide(
+    currentCtx,
+    slides[index],
+    {
+      width,
+      height,
+      textColor: config.textColor
+    },
+    images[index],
+    animProgress
+  );
+
+  ctx.clearRect(0, 0, width, height);
+  ctx.globalAlpha = 1;
+  ctx.drawImage(currentCanvas, 0, 0);
+
+  // Transisi fade ke slide berikutnya
+  if (
+    fadeMs > 0 &&
+    index < offscreens.length - 1 &&
+    localMs > durMs - fadeMs
+  ) {
+    const alpha = Math.min(
+      1,
+      (localMs - (durMs - fadeMs)) / fadeMs
+    );
+
+    const nextCanvas = offscreens[index + 1];
+    const nextCtx = nextCanvas.getContext('2d');
+
+    nextCtx.clearRect(0, 0, width, height);
+
+    renderSlide(
+      nextCtx,
+      slides[index + 1],
+      {
+        width,
+        height,
+        textColor: config.textColor
+      },
+      images[index + 1],
+      alpha
+    );
+
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(nextCanvas, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+}
 
     // 9. Jalankan rekaman
     recorder.start(200);
