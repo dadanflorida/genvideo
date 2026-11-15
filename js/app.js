@@ -232,6 +232,12 @@ async function playPreview() {
   }
 
   previewPlaying = true;
+  if (previewAudio) {
+  previewAudio.currentTime = previewElapsed;
+  previewAudio.play().catch(err => {
+    console.warn('Audio pratinjau gagal diputar:', err);
+  });
+  }
   console.log('PEMUTAR DIMULAI');
   previewStartTime = performance.now() - previewElapsed * 1000;
 
