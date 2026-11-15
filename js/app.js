@@ -156,8 +156,12 @@ async function playPreview() {
       0
     );
 
-    previewSeek.max = totalDuration;
+previewSeek.max = totalDuration;
 previewSeek.value = previewElapsed;
+const seekPercent = (previewElapsed / totalDuration) * 100;
+
+previewSeek.style.background =
+  `linear-gradient(to right, #ff3333 ${seekPercent}%, #ffffff ${seekPercent}%)`;
 previewCurrentTime.textContent =
   formatPreviewTime(previewElapsed);
 
