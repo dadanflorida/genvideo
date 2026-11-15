@@ -233,7 +233,13 @@ async function playPreview() {
 
   previewPlaying = true;
   if (previewAudio) {
-  previewAudio.currentTime = previewElapsed;
+  if (Number.isFinite(previewAudio.duration)) {
+    previewAudio.currentTime = Math.min(
+      previewElapsed,
+      previewAudio.duration
+    );
+  }
+
   previewAudio.play().catch(err => {
     console.warn('Audio pratinjau gagal diputar:', err);
   });
