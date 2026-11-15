@@ -275,7 +275,11 @@ previewTotalTime.textContent =
   previewSeek.style.background =
     'linear-gradient(to right, #ff3333 0%, #ffffff 0%)';
 
-  refreshPreview();
+  if (previewAudio) {
+  previewAudio.pause();
+  previewAudio.currentTime = 0;
+  }
+    refreshPreview();
   return;
 }
 
