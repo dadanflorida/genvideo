@@ -572,6 +572,9 @@ audioInput.addEventListener('change', () => {
     previewAudio = new Audio(URL.createObjectURL(file));
     previewAudio.preload = 'auto';
     previewAudio.loop = true;
+    previewAudio.addEventListener('ended', () => {
+  console.log('AUDIO SELESAI - LOOP AKTIF:', previewAudio.loop);
+});
   }
 });
 
