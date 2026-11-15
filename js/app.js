@@ -571,6 +571,7 @@ audioInput.addEventListener('change', () => {
   if (file) {
     previewAudio = new Audio(URL.createObjectURL(file));
     previewAudio.preload = 'auto';
+    previewAudio.loop = true;
   }
 });
 
