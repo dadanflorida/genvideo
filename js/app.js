@@ -637,3 +637,4 @@ generateBtn.textContent = '🎬 Generate Video';
 }
 });
  
+})();
