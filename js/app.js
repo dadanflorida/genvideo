@@ -169,12 +169,18 @@ previewTotalTime.textContent =
   formatPreviewTime(totalDuration);
 
     if (previewElapsed >= totalDuration) {
-      previewPlaying = false;
-      previewElapsed = 0;
-      previewAnimationId = null;
-      refreshPreview();
-      return;
-    }
+  previewPlaying = false;
+  previewElapsed = 0;
+  previewAnimationId = null;
+
+  previewSeek.value = 0;
+  previewCurrentTime.textContent = '00:00';
+  previewSeek.style.background =
+    'linear-gradient(to right, #ff3333 0%, #ffffff 0%)';
+
+  refreshPreview();
+  return;
+}
 
     drawPreviewFrame(previewElapsed);
     previewAnimationId = requestAnimationFrame(tick);
