@@ -204,7 +204,10 @@ previewPauseBtn.addEventListener('click', pausePreview);
   );
 
   previewElapsed = Number(previewSeek.value);
+const seekPercent = (previewElapsed / totalDuration) * 100;
 
+previewSeek.style.background =
+  `linear-gradient(to right, #ff3333 ${seekPercent}%, #ffffff ${seekPercent}%)`;
   previewStartTime =
     performance.now() - previewElapsed * 1000;
 
