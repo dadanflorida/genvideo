@@ -179,6 +179,7 @@ animSelect.value = slide.animation || 'none';
 
 animSelect.addEventListener('change', () => {
   slide.animation = animSelect.value;
+ console.log('ANIMASI:', slide.animation);
   if (idx === 0) refreshPreview();
 });
 
