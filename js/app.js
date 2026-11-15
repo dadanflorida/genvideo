@@ -310,6 +310,18 @@ previewPauseBtn.addEventListener('click', pausePreview);
   );
 
   previewElapsed = Number(previewSeek.value);
+    if (previewAudio && Number.isFinite(previewAudio.duration)) {
+  previewAudio.currentTime = Math.min(
+    previewElapsed,
+    previewAudio.duration
+  );
+
+  if (previewPlaying) {
+    previewAudio.play().catch(err => {
+      console.warn('Audio pratinjau gagal diputar:', err);
+    });
+  }
+    }
 const seekPercent = (previewElapsed / totalDuration) * 100;
 
 previewSeek.style.background =
