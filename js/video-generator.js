@@ -276,8 +276,8 @@ const offscreens = slides.map(() => {
   const durMs = durations[index] * 1000;
   const localMs = localT * 1000;
 
-  // Durasi animasi teks: 800 milidetik
-  const animProgress = Math.min(1, localMs / 800);
+  // Durasi animasi teks: 2000 milidetik
+  const animProgress = Math.min(1, localMs / 2000);
 
   // Render slide utama
   const currentCanvas = offscreens[index];
