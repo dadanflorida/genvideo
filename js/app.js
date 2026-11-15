@@ -103,23 +103,113 @@ function drawPreviewFrame(elapsed) {
   const slide = state.slides[index];
   if (!slide) return;
 
+  const width = previewCanvas.width;
+  const height = previewCanvas.height;
+
+  const duration = Math.max(
+    0.5,
+    Number(slide.duration) || 3
+  );
+
   const progress = Math.min(1, localT / 2);
 
-  const imgEl = slide.image
+  const currentImg = slide.image
     ? state.imageCache.get(slide.id) || null
     : null;
 
+  const opts = {
+    width,
+    height,
+    textColor: $('#textcolor').value
+  };
+
+  const transition = $('#transition').value;
+
+  if (
+    transition !== 'fade' ||
+    index >= state.slides.length - 1
+  ) {
+    VideoGenerator.renderPreview(
+      previewCanvas,
+      slide,
+      opts,
+      currentImg,
+      progress
+    );
+    return;
+  }
+
+  const fadeMs = Math.min(
+    500,
+    Math.min(...state.slides.map(s =>
+      Math.max(0.5, Number(s.duration) || 3)
+    )) * 1000 * 0.4
+  );
+
+  const localMs = localT * 1000;
+  const durationMs = duration * 1000;
+
+  if (localMs <= durationMs - fadeMs) {
+    VideoGenerator.renderPreview(
+      previewCanvas,
+      slide,
+      opts,
+      currentImg,
+      progress
+    );
+    return;
+  }
+
+  const alpha = Math.min(
+    1,
+    (localMs - (durationMs - fadeMs)) / fadeMs
+  );
+
+  const nextSlide = state.slides[index + 1];
+
+  const nextImg = nextSlide.image
+    ? state.imageCache.get(nextSlide.id) || null
+    : null;
+
+  if (!drawPreviewFrame.currentCanvas) {
+    drawPreviewFrame.currentCanvas =
+      document.createElement('canvas');
+
+    drawPreviewFrame.nextCanvas =
+      document.createElement('canvas');
+  }
+
+  const currentCanvas = drawPreviewFrame.currentCanvas;
+  const nextCanvas = drawPreviewFrame.nextCanvas;
+
+  currentCanvas.width = nextCanvas.width = width;
+  currentCanvas.height = nextCanvas.height = height;
+
   VideoGenerator.renderPreview(
-    previewCanvas,
+    currentCanvas,
     slide,
-    {
-      width: previewCanvas.width,
-      height: previewCanvas.height,
-      textColor: $('#textcolor').value
-    },
-    imgEl,
+    opts,
+    currentImg,
     progress
   );
+
+  VideoGenerator.renderPreview(
+    nextCanvas,
+    nextSlide,
+    opts,
+    nextImg,
+    alpha
+  );
+
+  const ctx = previewCanvas.getContext('2d');
+
+  ctx.clearRect(0, 0, width, height);
+  ctx.globalAlpha = 1;
+  ctx.drawImage(currentCanvas, 0, 0);
+
+  ctx.globalAlpha = alpha;
+  ctx.drawImage(nextCanvas, 0, 0);
+  ctx.globalAlpha = 1;
 }
 
 function formatPreviewTime(seconds) {
