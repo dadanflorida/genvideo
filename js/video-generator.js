@@ -87,7 +87,6 @@
 
     if (animation === 'fade') {
      ctx.globalAlpha = progress;
-      console.log('FADE PROGRESS:', progress);
     }
 
     if (animation === 'zoom') {
