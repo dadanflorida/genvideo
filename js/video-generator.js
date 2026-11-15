@@ -217,8 +217,15 @@ const offscreens = slides.map(() => {
         const dest = audioCtx.createMediaStreamDestination();
         audioSource = audioCtx.createBufferSource();
         audioSource.buffer = decoded;
-        audioSource.loop = true;
-        audioSource.connect(dest);
+audioSource.loop = true;
+
+const gainNode = audioCtx.createGain();
+
+gainNode.gain.value =
+  Math.max(0, Math.min(100, Number(config.audioVolume ?? 100))) / 100;
+
+audioSource.connect(gainNode);
+gainNode.connect(dest);
         audioTracks = dest.stream.getAudioTracks();
       } catch (e) {
         audioCtx = null;
