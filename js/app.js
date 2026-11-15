@@ -22,6 +22,8 @@
   const progressFill = $('#progress-fill');
   const progressText = $('#progress-text');
   const previewCanvas = $('#preview');
+  const previewPlayBtn = $('#preview-play');
+  const previewPauseBtn = $('#preview-pause');
   const audioInput = $('#audio');
   const audioNameEl = $('#audio-name');
 
