@@ -192,6 +192,27 @@ previewPlayBtn.addEventListener('click', playPreview);
 
 previewPauseBtn.addEventListener('click', pausePreview);
 
+  previewSeek.addEventListener('input', () => {
+  const totalDuration = state.slides.reduce(
+    (total, slide) =>
+      total + Math.max(0.5, Number(slide.duration) || 3),
+    0
+  );
+
+  previewElapsed = Number(previewSeek.value);
+
+  previewStartTime =
+    performance.now() - previewElapsed * 1000;
+
+  drawPreviewFrame(previewElapsed);
+
+  previewCurrentTime.textContent =
+    formatPreviewTime(previewElapsed);
+
+  previewTotalTime.textContent =
+    formatPreviewTime(totalDuration);
+});
+
   
   // ---------- Render daftar slide ----------
   function renderSlides() {
