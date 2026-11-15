@@ -122,6 +122,14 @@ function drawPreviewFrame(elapsed) {
   );
 }
 
+function formatPreviewTime(seconds) {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+
+  return String(min).padStart(2, '0') + ':' +
+         String(sec).padStart(2, '0');
+}
+  
 async function playPreview() {
   if (previewPlaying || state.slides.length === 0) return;
 
