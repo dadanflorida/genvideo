@@ -511,57 +511,22 @@ animField.appendChild(animSelect);
   }
 
   // ---------- Audio latar ----------
-  audioInput.addEventListener('change', () => {
-    const file = audioInput.files[0];
-    audioNameEl.textContent = file ? '🎵 ' + file.name : '';
-  });
+audioInput.addEventListener('change', () => {
+  const file = audioInput.files[0];
 
-  // ---------- Generate ----------
-  generateBtn.addEventListener('click', async () => {
-    if (state.generating) return;
-    if (state.slides.length === 0) {
-      alert('Tambahkan minimal 1 slide dulu.');
-      return;
-    }
+  audioNameEl.textContent = file ? '🎵 ' + file.name : '';
 
-    const [width, height] = $('#resolution').value.split(',').map(Number);
-    const fps = parseInt($('#fps').value, 10);
+  if (previewAudio) {
+    previewAudio.pause();
+    URL.revokeObjectURL(previewAudio.src);
+    previewAudio = null;
+  }
 
-    state.generating = true;
-    generateBtn.disabled = true;
-    downloadLink.style.display = 'none';
-    progressWrap.style.display = 'block';
-    progressFill.style.width = '0%';
-    progressText.textContent = '0%';
-
-    try {
-      const result = await VideoGenerator.generate({
-        slides: state.slides,
-        width,
-        height,
-        fps,
-        transition: $('#transition').value,
-        textColor: $('#textcolor').value,
-        audioFile: audioInput.files[0] || null,
-        onProgress: (p) => {
-          const pct = Math.round(p * 100);
-          progressFill.style.width = pct + '%';
-          progressText.textContent = pct + '%';
-        }
-      });
-
-      downloadLink.href = result.url;
-      downloadLink.style.display = 'block';
-      progressText.textContent = 'Selesai! ✅';
-    } catch (err) {
-      console.error(err);
-      alert('Gagal generate video: ' + err.message);
-      progressWrap.style.display = 'none';
-    } finally {
-      state.generating = false;
-      generateBtn.disabled = false;
-    }
-  });
+  if (file) {
+    previewAudio = new Audio(URL.createObjectURL(file));
+    previewAudio.preload = 'auto';
+  }
+});
 
   // ---------- Init ----------
   addBtn.addEventListener('click', addSlide);
