@@ -29,6 +29,8 @@
   const previewTotalTime = $('#preview-total-time');
   const audioInput = $('#audio');
   const audioNameEl = $('#audio-name');
+  const audioVolume = $('#audio-volume');
+  const audioVolumeValue = $('#audio-volume-value');
 
   // ---------- Utilitas ----------
   function uid() { return state.nextId++; }
