@@ -579,10 +579,61 @@ audioInput.addEventListener('change', () => {
 });
 
   // ---------- Init ----------
-  addBtn.addEventListener('click', addSlide);
-  $('#textcolor').addEventListener('input', refreshPreview);
+addBtn.addEventListener('click', addSlide);
+$('#textcolor').addEventListener('input', refreshPreview);
 
-  // Slide awal
-  addSlide();
-})();
+// ---------- Generate Video ----------
+generateBtn.addEventListener('click', async () => {
+if (state.generating) return;
+
+if (state.slides.length === 0) {
+alert('Tambahkan minimal satu slide.');
+return;
+}
+
+state.generating = true;
+generateBtn.disabled = true;
+generateBtn.textContent = '⏳ Sedang membuat video...';
+
+downloadLink.style.display = 'none';
+progressWrap.style.display = 'block';
+progressFill.style.width = '0%';
+progressText.textContent = '0%';
+
+try {
+const [width, height] = $('#resolution').value
+.split(',')
+.map(Number);
+
+const result = await VideoGenerator.generate({
+  slides: state.slides,
+  width,
+  height,
+  fps: Number($('#fps').value),
+  transition: $('#transition').value,
+  audioFile: audioInput.files[0] || null,
+  audioVolume: Number(audioVolume.value),
+  onProgress: (progress) => {
+    const percent = Math.round(progress * 100);
+    progressFill.style.width = percent + '%';
+    progressText.textContent = percent + '%';
+  }
+});
+
+downloadLink.href = result.url;
+downloadLink.download = 'GenVideo.webm';
+downloadLink.style.display = 'inline-block';
+
+alert('Video berhasil dibuat! Silakan unduh video.');
+
+} catch (error) {
+console.error('GAGAL GENERATE VIDEO:', error);
+alert('Gagal membuat video: ' + error.message);
+
+} finally {
+state.generating = false;
+generateBtn.disabled = false;
+generateBtn.textContent = '🎬 Generate Video';
+}
+});
  
