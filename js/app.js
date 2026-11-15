@@ -69,7 +69,110 @@
     };
     VideoGenerator.renderPreview(previewCanvas, first, opts, imgEl);
   }
+// ---------- Mesin Putar Pratinjau ----------
+let previewPlaying = false;
+let previewAnimationId = null;
+let previewElapsed = 0;
+let previewStartTime = 0;
 
+function drawPreviewFrame(elapsed) {
+  let acc = 0;
+  let index = 0;
+  let localT = 0;
+
+  for (let i = 0; i < state.slides.length; i++) {
+    const duration = Math.max(
+      0.5,
+      Number(state.slides[i].duration) || 3
+    );
+
+    if (elapsed < acc + duration) {
+      index = i;
+      localT = elapsed - acc;
+      break;
+    }
+
+    acc += duration;
+    index = i;
+    localT = duration;
+  }
+
+  const slide = state.slides[index];
+  if (!slide) return;
+
+  const progress = Math.min(1, localT / 2);
+
+  const imgEl = slide.image
+    ? state.imageCache.get(slide.id) || null
+    : null;
+
+  VideoGenerator.renderPreview(
+    previewCanvas,
+    slide,
+    {
+      width: previewCanvas.width,
+      height: previewCanvas.height,
+      textColor: $('#textcolor').value
+    },
+    imgEl,
+    progress
+  );
+}
+
+async function playPreview() {
+  if (previewPlaying || state.slides.length === 0) return;
+
+  // Pastikan semua gambar sudah dimuat
+  for (const slide of state.slides) {
+    if (slide.image && !state.imageCache.has(slide.id)) {
+      await loadImageForPreview(slide.id, slide.image);
+    }
+  }
+
+  previewPlaying = true;
+  previewStartTime = performance.now() - previewElapsed * 1000;
+
+  function tick() {
+    if (!previewPlaying) return;
+
+    previewElapsed =
+      (performance.now() - previewStartTime) / 1000;
+
+    const totalDuration = state.slides.reduce(
+      (total, slide) =>
+        total + Math.max(0.5, Number(slide.duration) || 3),
+      0
+    );
+
+    if (previewElapsed >= totalDuration) {
+      previewPlaying = false;
+      previewElapsed = 0;
+      previewAnimationId = null;
+      refreshPreview();
+      return;
+    }
+
+    drawPreviewFrame(previewElapsed);
+    previewAnimationId = requestAnimationFrame(tick);
+  }
+
+  previewAnimationId = requestAnimationFrame(tick);
+}
+
+function pausePreview() {
+  previewPlaying = false;
+
+  if (previewAnimationId !== null) {
+    cancelAnimationFrame(previewAnimationId);
+    previewAnimationId = null;
+  }
+}
+
+previewPlayBtn.addEventListener('click', playPreview);
+
+previewPauseBtn.addEventListener('click', pausePreview);
+
+  
   // ---------- Render daftar slide ----------
   function renderSlides() {
     slideListEl.innerHTML = '';
