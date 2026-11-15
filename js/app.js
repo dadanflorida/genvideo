@@ -543,6 +543,17 @@ animField.appendChild(animSelect);
     renderSlides();
   }
 
+  // ---------- Pengaturan volume musik ----------
+audioVolume.addEventListener('input', () => {
+  const volume = Number(audioVolume.value);
+
+  audioVolumeValue.textContent = volume + '%';
+
+  if (previewAudio) {
+    previewAudio.volume = volume / 100;
+  }
+});
+
   // ---------- Audio latar ----------
 audioInput.addEventListener('change', () => {
   const file = audioInput.files[0];
