@@ -148,6 +148,23 @@ async function playPreview() {
       0
     );
 
+    previewSeek.max = totalDuration;
+previewSeek.value = previewElapsed;
+
+function formatPreviewTime(seconds) {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+
+  return String(min).padStart(2, '0') + ':' +
+         String(sec).padStart(2, '0');
+}
+
+previewCurrentTime.textContent =
+  formatPreviewTime(previewElapsed);
+
+previewTotalTime.textContent =
+  formatPreviewTime(totalDuration);
+
     if (previewElapsed >= totalDuration) {
       previewPlaying = false;
       previewElapsed = 0;
