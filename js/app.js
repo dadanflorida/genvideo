@@ -235,6 +235,8 @@ async function playPreview() {
 
   previewPlaying = true;
   if (previewAudio) {
+  previewAudio.volume = Number(audioVolume.value) / 100;
+
   if (Number.isFinite(previewAudio.duration)) {
     previewAudio.currentTime = Math.min(
       previewElapsed,
