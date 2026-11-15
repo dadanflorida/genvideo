@@ -288,6 +288,9 @@ previewTotalTime.textContent =
 
 function pausePreview() {
   previewPlaying = false;
+  if (previewAudio) {
+  previewAudio.pause();
+  }
 
   if (previewAnimationId !== null) {
     cancelAnimationFrame(previewAnimationId);
