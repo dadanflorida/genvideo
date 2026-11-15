@@ -159,10 +159,10 @@
 }
 
   /* ---------- API publik: render untuk pratinjau ---------- */
-  VideoGenerator.renderPreview = function (canvas, slide, opts, imgEl) {
+  VideoGenerator.renderPreview = function (canvas, slide, opts, imgEl, progress = 1) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    renderSlide(ctx, slide, opts, imgEl);
+    renderSlide(ctx, slide, opts, imgEl, progress);
   };
 
   /* ---------- Generate video ---------- */
