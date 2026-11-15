@@ -218,6 +218,7 @@ const offscreens = slides.map(() => {
         audioSource = audioCtx.createBufferSource();
         audioSource.buffer = decoded;
         audioSource.connect(dest);
+        audioSource.loop = true;
         audioTracks = dest.stream.getAudioTracks();
       } catch (e) {
         audioCtx = null;
