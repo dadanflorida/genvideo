@@ -281,4 +281,35 @@ body {
   .layout { grid-template-columns: 1fr; padding: 12px; }
   .topbar { padding: 12px; }
   }
-  
+
+/* ---------- Garis Durasi Pratinjau ---------- */
+.preview-timeline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  color: white;
+  font-size: 12px;
+}
+
+.preview-timeline input[type="range"] {
+  flex: 1;
+  height: 5px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #ffffff;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.preview-timeline input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  background: #ff3333;
+  border-radius: 50%;
+  cursor: pointer;
+}
