@@ -25,8 +25,8 @@
   const previewPlayBtn = $('#preview-play');
   const previewPauseBtn = $('#preview-pause');
   const previewSeek = $('#preview-seek');
-const previewCurrentTime = $('#preview-current-time');
-const previewTotalTime = $('#preview-total-time');
+  const previewCurrentTime = $('#preview-current-time');
+  const previewTotalTime = $('#preview-total-time');
   const audioInput = $('#audio');
   const audioNameEl = $('#audio-name');
 
