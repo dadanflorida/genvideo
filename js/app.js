@@ -77,6 +77,7 @@ let previewPlaying = false;
 let previewAnimationId = null;
 let previewElapsed = 0;
 let previewStartTime = 0;
+let previewAudio = null;
 
 function drawPreviewFrame(elapsed) {
   let acc = 0;
