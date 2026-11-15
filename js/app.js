@@ -130,6 +130,7 @@ async function playPreview() {
   }
 
   previewPlaying = true;
+  console.log('PEMUTAR DIMULAI');
   previewStartTime = performance.now() - previewElapsed * 1000;
 
   function tick() {
